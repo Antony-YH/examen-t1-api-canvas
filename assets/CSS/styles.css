@@ -1,0 +1,13 @@
+body {
+    background: linear-gradient(to bottom, #a8d8f0, #e6f4fb);
+}
+
+canvas {
+    border: 3px solid #000;
+    border-radius: 15px;
+    background: linear-gradient(to bottom, #7ec0e6, #ccefff);
+}
+
+img {
+    border-radius: 15px;
+}
