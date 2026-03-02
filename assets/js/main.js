@@ -1,11 +1,11 @@
 /**
  * ============================================================================
  * PROYECTO: Dibujo Vectorial con API Canvas 2D
- * INSTITUCIÓN: Tecnológico Nacional de México
+ * INSTITUCIÓN: Tecnológico Nacional de México Campus Pachuca
  * CARRERA: Ingeniería en Sistemas Computacionales
- * ESPECIALIDAD: Redes y Tecnología de Software
+ * MATERIA: Graficación
  * AUTOR: Antonio Yañez Hernandez
- * FECHA: Marzo 2026
+ * FECHA: 02 Marzo 2026
  * DESCRIPCIÓN: Renderizado programático de un ajolote completo y simétrico
  * utilizando la API Canvas 2D. Este código genera una ilustración con todas
  * las seis branquias completamente renderizadas y simétricas, solucionando
@@ -16,7 +16,7 @@
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Inicialización del Canvas
+    // Inicialización del Canvas y Contexto
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
 
@@ -29,38 +29,41 @@ document.addEventListener("DOMContentLoaded", () => {
         axolotlGills: "#d11a59",// Rojo/Rosa intenso (Tallos de branquias)
         plantDark: "#388e3c",   // Verde oscuro (Bloques de algas)
         plantLight: "#4caf50",  // Verde claro (Círculos de algas)
-        cyanDetail: "#5CE1E6",  // Azul claro (Detalle de las patas) <-- Añadido
-        black: "#000000",       // Negro (Ojos)
-        white: "#ffffff"        // Blanco (Pupilas de ojos)
+        cyanDetail: "#5CE1E6",  // Azul claro (Detalle de las patas) 
+        black: "#000000",       // Negro (Líneas y Ojos)
+        white: "#ffffff"        // Blanco (Burbujas y Brillo de ojos)
     };
 
     /**
-     * Función constructora principal
-     * Llama a las subfunciones en orden de capas (fondo -> primer plano)
+     * Función constructora principal que orquesta el dibujo.
+     * El orden de las llamadas determina qué elementos se dibujan delante de otros (z-index natural).
      */
     function drawScene() {
-        drawBackground();
-        drawPlants();
-        drawBubbles();
-        drawTail();     // Detrás del cuerpo
-        drawBody();     // Delante de la cola
-        drawGills();    // Las seis, completas y simétricas, detrás de la cabeza
-        drawHead();     // Delante del cuerpo y branquias
-        drawFace();     // Symmetrical y completa
-        drawLegs();     // Las cuatro, symmetrical y completas
+        drawBackground(); // Capa 1: Agua y Arena
+        drawPlants();     // Capa 2: Vegetación
+        drawBubbles();    // Capa 3: Burbujas
+        drawTail();       // Capa 4: Cola (detrás del cuerpo)
+        drawBody();       // Capa 5: Cuerpo
+        drawGills();      // Capa 6: Branquias (detrás de la cabeza)
+        drawHead();       // Capa 7: Cabeza
+        drawFace();       // Capa 8: Rostro (sobre la cabeza)
+        drawLegs();       // Capa 9: Patas (sobre el cuerpo)
     }
 
-    // --- 1. FONDO (AGUA Y ARENA) ---
+    /**
+     * Dibuja el fondo marino utilizando rectángulos planos.
+     * Crea un rectángulo grande para el agua y uno más pequeño en la base para la arena.
+     */
     function drawBackground() {
-        // Agua (Rectángulo)
+        // Agua
         ctx.fillStyle = colors.water;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Arena (Rectángulo)
+        // Arena
         ctx.fillStyle = colors.sand;
         ctx.fillRect(0, 520, canvas.width, 80);
 
-        // Línea divisoria (Línea)
+        // Línea divisoria entre agua y arena
         ctx.beginPath();
         ctx.moveTo(0, 520);
         ctx.lineTo(canvas.width, 520);
@@ -69,18 +72,23 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.stroke();
     }
 
-    // --- 2. VEGETACIÓN (ESTILO BLOQUES) ---
+    /**
+     * Coordina el dibujo de los cuatro grupos de algas/plantas en la base del canvas.
+     */
     function drawPlants() {
         ctx.lineWidth = 2;
-        // Algas izquierdas (bloques y círculos)
-        drawBlockyPlant(80, 520, 9);
-        // Algas derechas (bloques y círculos)
-        drawBlockyPlant(750, 520, 6);
-        drawBlockyPlant(800, 520, 4);
-        drawBlockyPlant(850, 520, 7);
+        drawBlockyPlant(80, 520, 9);  // Izquierda
+        drawBlockyPlant(750, 520, 6); // Derecha
+        drawBlockyPlant(800, 520, 4); // Derecha
+        drawBlockyPlant(850, 520, 7); // Derecha
     }
 
-    // Subfunción para dibujar una alga de bloques
+    /**
+     * Dibuja una planta individual basada en segmentos (bloques y círculos).
+     * @param {number} x - Coordenada X central de la planta.
+     * @param {number} yBase - Coordenada Y donde nace la planta (suelo).
+     * @param {number} blocks - Número de segmentos/bloques verticales.
+     */
     function drawBlockyPlant(x, yBase, blocks) {
         let currentY = yBase;
         const width = 20;
@@ -89,12 +97,12 @@ document.addEventListener("DOMContentLoaded", () => {
         for (let i = 0; i < blocks; i++) {
             currentY -= height;
 
-            // Bloque (Rectángulo)
+            // Bloque central (Tallo rectangular)
             ctx.fillStyle = colors.plantDark;
             ctx.fillRect(x - width / 2, currentY, width, height);
             ctx.strokeRect(x - width / 2, currentY, width, height);
 
-            // Círculos laterales
+            // Círculos laterales simulando hojas
             ctx.fillStyle = colors.plantLight;
             ctx.beginPath();
             ctx.arc(x - width / 2, currentY, 7, 0, Math.PI * 2);
@@ -106,9 +114,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- 3. BURBUJAS ---
+    /**
+     * Dibuja múltiples círculos blancos con contorno negro simulando burbujas
+     * distribuidas estáticamente en el lienzo.
+     */
     function drawBubbles() {
-        // Coordenadas y radios para la composición
         const bubbles = [
             { x: 120, y: 150, r: 16 }, { x: 160, y: 220, r: 14 },
             { x: 110, y: 280, r: 8 },  { x: 140, y: 420, r: 10 },
@@ -127,38 +137,42 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 4. COLA ---
+    /**
+     * Construye la cola trasera del ajolote utilizando un triángulo base 
+     * modificado con curvas de Bezier cuadráticas para suavizar los bordes.
+     */
     function drawTail() {
         ctx.beginPath();
-        // Forma triangular simétrica con curvas (Path)
         ctx.moveTo(350, 310);
-        ctx.quadraticCurveTo(150, 310, 80, 440); // Curva superior hacia la punta
-        ctx.quadraticCurveTo(250, 450, 340, 390); // Curva inferior de regreso
+        ctx.quadraticCurveTo(150, 310, 80, 440); // Curva superior 
+        ctx.quadraticCurveTo(250, 450, 340, 390); // Curva inferior 
         ctx.fillStyle = colors.axolotlBody;
         ctx.fill();
         ctx.lineWidth = 3;
         ctx.stroke();
 
-        // Línea central magenta interior (symmetrical)
+        // Detalle interior de la cola (Línea central color magenta)
         ctx.beginPath();
         ctx.moveTo(320, 350);
         ctx.lineTo(110, 435);
         ctx.strokeStyle = colors.axolotlDark;
         ctx.lineWidth = 2;
         ctx.stroke();
-        ctx.strokeStyle = colors.black; 
+        ctx.strokeStyle = colors.black; // Restaura el color a negro para futuros outlines
     }
 
-    // --- 5. BRANQUIAS ---
-    // ESTA FUNCIÓN DIBUJA LAS SEIS BRANQUIAS COMPLETAS Y SIMÉTRICAS
+    /**
+     * Dibuja las seis branquias características del ajolote (3 por lado).
+     * Utiliza transformaciones (translate/rotate) para colocar cada branquia simétricamente.
+     */
     function drawGills() {
-        const cx = 630;
-        const cy = 240;
+        const cx = 630; // Centro X (mismo centro de la cabeza)
+        const cy = 240; // Centro Y
 
-        // Ángulos simétricos para las branquias (3 izq, 3 der)
+        // Ángulos simétricos en radianes para las 6 branquias
         const angles = [
-            Math.PI + 0.4, Math.PI, Math.PI - 0.4, // Lado izquierdo de la cabeza (symmetrical)
-            -0.4, 0, 0.4                           // Lado derecho de la cabeza (symmetrical)
+            Math.PI + 0.4, Math.PI, Math.PI - 0.4, // Izquierda
+            -0.4, 0, 0.4                           // Derecha
         ];
 
         angles.forEach(angle => {
@@ -166,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.translate(cx, cy);
             ctx.rotate(angle);
             
-            // Tallo central rojo/rosa (línea gruesa)
+            // Tallo central grueso color rojo
             ctx.beginPath();
             ctx.moveTo(95, 0); 
             ctx.lineTo(190, 0); 
@@ -174,16 +188,15 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.lineWidth = 8;
             ctx.stroke();
 
-            // Círculos magentas (franja) - DIBUJA TODOS LOS CÍRCULOS COMPLETOS
+            // Renderización de los "pelitos" de la branquia usando bucles de círculos magentas
             ctx.fillStyle = colors.axolotlGills;
             ctx.strokeStyle = colors.black;
             ctx.lineWidth = 1.5;
             
-            // Loop para dibujar múltiples círculos por branquia (genera muchas figuras)
             for(let i = 110; i <= 180; i += 18) {
-                // Ramificación superior
+                // Fila superior de círculos
                 ctx.beginPath(); ctx.arc(i, -10, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-                // Ramificación inferior
+                // Fila inferior de círculos
                 ctx.beginPath(); ctx.arc(i, 10, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
             }
 
@@ -194,10 +207,11 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.lineWidth = 2.5;
     }
 
-    // --- 6. CABEZA ---
+    /**
+     * Dibuja la cabeza del ajolote mediante una elipse perfectamente horizontal.
+     */
     function drawHead() {
         ctx.beginPath();
-        // Symmetrical y completa
         ctx.ellipse(630, 240, 105, 90, 0, 0, Math.PI * 2);
         ctx.fillStyle = colors.axolotlBody;
         ctx.fill();
@@ -205,10 +219,12 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.stroke();
     }
 
-    // --- 7. CUERPO (MODIFICADO: Ángulo corregido) ---
+    /**
+     * Dibuja el cuerpo principal del ajolote mediante una elipse inclinada 
+     * en ángulo negativo (-0.25 radianes) para conectar naturalmente con la cabeza.
+     */
     function drawBody() {
         ctx.beginPath();
-        // Ángulo negativo (-0.25) para que el cuerpo apunte hacia arriba a la cabeza
         ctx.ellipse(450, 330, 160, 85, -0.25, 0, Math.PI * 2);
         ctx.fillStyle = colors.axolotlBody;
         ctx.fill();
@@ -217,33 +233,40 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.stroke();
     }
 
-    // --- 8. PATAS (MODIFICADO: Como el original) ---
+    /**
+     * Coordina el dibujo de las 4 patas colgantes.
+     */
     function drawLegs() {
-        // Coordenadas ajustadas para que cuelguen rectas
-        drawLeg(340, 390, -0.1); 
-        drawLeg(410, 400, 0.05);  
-        drawLeg(520, 370, -0.15); 
-        drawLeg(570, 350, 0.1);  
+        drawLeg(340, 390, -0.1);  // Trasera izquierda
+        drawLeg(410, 400, 0.05);  // Trasera derecha
+        drawLeg(520, 370, -0.15); // Delantera izquierda
+        drawLeg(570, 350, 0.1);   // Delantera derecha
     }
 
-    // Subfunción para dibujar una pata (Rectángulos y 3 dedos)
+    /**
+     * Dibuja una pata completa, aplicando rotación individual y 
+     * ensamblando la base rectangular, el detalle cyan y los 3 dedos inferiores.
+     * @param {number} x - Coordenada X de origen.
+     * @param {number} y - Coordenada Y de origen.
+     * @param {number} angle - Ángulo de rotación de la pata (en radianes).
+     */
     function drawLeg(x, y, angle) {
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(angle);
         
-        // Pata principal
+        // Base de la pata (Rectángulo rosa principal)
         ctx.fillStyle = colors.axolotlBody;
         ctx.lineWidth = 3;
         ctx.fillRect(-12, 0, 24, 35);
         ctx.strokeRect(-12, 0, 24, 35);
 
-        // Línea azul (cyan) en el tobillo
+        // Franja de detalle en el tobillo (Rectángulo Cyan)
         ctx.fillStyle = colors.cyanDetail;
         ctx.fillRect(-12, 35, 24, 6);
         ctx.strokeRect(-12, 35, 24, 6);
 
-        // 3 Dedos separados (como en el original)
+        // Dedos separados (3 Rectángulos iterados manualmente para control de rotación)
         ctx.fillStyle = colors.axolotlBody; 
         const toeW = 6;
         const toeH = 14;
@@ -263,36 +286,42 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.restore();
     }
 
-    // --- 9. ROSTRO ---
+    /**
+     * Construye las facciones del ajolote: los dos ojos y la boca sonriente.
+     */
     function drawFace() {
-        // Ojos (negros, simétricos con pupilas blancas)
+        // Renderizado de ojos simétricos
         drawEye(570, 210);
         drawEye(680, 210);
 
-        // Sonrisa magenta simple (curva)
+        // Renderizado de boca sonriente (Curva de Bezier Cuadrática)
         ctx.beginPath();
-        ctx.moveTo(580, 260);
-        ctx.quadraticCurveTo(625, 290, 670, 260);
-        ctx.strokeStyle = colors.axolotlDark; // Usar magenta/rosa oscuro
+        ctx.moveTo(580, 260); // Punto de inicio
+        ctx.quadraticCurveTo(625, 290, 670, 260); // Punto de control y punto final
+        ctx.strokeStyle = colors.axolotlDark;
         ctx.lineWidth = 4;
         ctx.stroke();
     }
 
-    // Subfunción para dibujar un ojo
+    /**
+     * Dibuja un ojo con un círculo negro de base y un pequeño círculo blanco simulando brillo especular.
+     * @param {number} x - Coordenada X del centro del ojo.
+     * @param {number} y - Coordenada Y del centro del ojo.
+     */
     function drawEye(x, y) {
-        // Ojo negro (Círculo)
+        // Base oscura
         ctx.beginPath();
         ctx.arc(x, y, 18, 0, Math.PI * 2);
         ctx.fillStyle = colors.black;
         ctx.fill();
 
-        // Pupila blanca (Círculo pequeño, symmetrical)
+        // Brillo (Pupila blanca descentrada hacia arriba a la derecha)
         ctx.beginPath();
         ctx.arc(x + 5, y - 5, 5, 0, Math.PI * 2);
         ctx.fillStyle = colors.white;
         ctx.fill();
     }
 
-    // Ejecutar la secuencia de dibujo
+    // Disparador principal para ejecutar todo el renderizado al cargar la página
     drawScene();
 });

@@ -1,63 +1,82 @@
 /* ==========================================================================
-   Estilos Personalizados - Axolote Canvas 2D
+   PROYECTO: Dibujo Vectorial con API Canvas 2D
+   INSTITUCIÓN: Tecnológico Nacional de México Campus Pachuca
+   CARRERA: Ingeniería en Sistemas Computacionales
+   ESPECIALIDAD: Redes y Tecnología de Software
+   MATERIA: Graficación
+   AUTOR: Antonio Yañez Hernandez
+   FECHA: 02 Marzo 2026
+   DESCRIPCIÓN: Hoja de estilos en cascada (CSS) para la interfaz web.
+   Incluye variables de color, efectos de cristal (glassmorphism), 
+   sombras dinámicas y transiciones para mejorar la experiencia de usuario.
    ========================================================================== */
 
-/* 1. Variables de color (Facilita cambiar la paleta en el futuro) */
+/* --- 1. VARIABLES GLOBALES GLOBALES --- */
 :root {
     --water-light: #e6f4fb;
     --water-deep: #a8d8f0;
     --canvas-bg-top: #7ec0e6;
     --canvas-bg-bottom: #ccefff;
-    --border-color: #2c3e50; /* Un azul marino oscuro, más elegante que negro puro */
+    --border-color: #2c3e50; /* Azul marino oscuro para contrastar elegantemente */
 }
 
-/* 2. Fondo general de la página */
+/* --- 2. ESTILOS BASE (BODY) --- */
 body {
-    /* Degradado en diagonal para un efecto más dinámico */
+    /* Degradado en diagonal simulando la iluminación marina */
     background: linear-gradient(135deg, var(--water-light) 0%, var(--water-deep) 100%);
-    /* Evita que el degradado se corte si la página es muy larga */
+    /* Propiedad fixed para evitar que el degradado se corte al hacer scroll */
     background-attachment: fixed; 
 }
 
-/* 3. Estilos específicos para el Canvas */
-canvas {
-    border: 4px solid var(--border-color);
+/* --- 3. CONTENEDORES INTERACTIVOS (CANVAS E IMAGEN) --- */
+/* Estilos compartidos para mantener consistencia visual y optimizar código */
+canvas, img {
+    /* Redondeo moderno */
     border-radius: 16px;
-    
-    /* CAMBIA ESTO: Ponlo en blanco o transparente para que el JS haga su trabajo */
-    background-color: #ffffff; 
-    
+    /* Sombra base para dar profundidad */
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Transiciones fluidas para las animaciones al pasar el mouse */
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* Efecto interactivo al pasar el mouse sobre el Canvas */
-canvas:hover {
-    transform: translateY(-5px);
+/* Estilos específicos solo para el Canvas */
+canvas {
+    /* Borde oscuro contrastante para delimitar el área de dibujo */
+    border: 4px solid var(--border-color);
+    /* Fondo blanco para asegurar que los colores renderizados por JS sean precisos */
+    background-color: #ffffff; 
+}
+
+/* Estilos específicos solo para la Imagen */
+img {
+    /* Borde blanco simulando un marco fotográfico */
+    border: 4px solid #ffffff; 
+}
+
+/* --- 4. EFECTOS HOVER (INTERACTIVIDAD) --- */
+/* Elevación de los elementos al pasar el cursor (Aplica a ambos) */
+canvas:hover, img:hover {
+    transform: translateY(-8px);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
 }
 
-/* 4. Estilos para la imagen original */
-img {
-    border-radius: 16px;
-    /* Borde blanco estilo fotografía / marco */
-    border: 4px solid #ffffff; 
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Efecto interactivo al pasar el mouse sobre la imagen */
-img:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-}
-
-/* 5. Ajuste moderno para las tarjetas (Cards) de Bootstrap */
+/* --- 5. COMPONENTES BOOTSTRAP PERSONALIZADOS (TARJETAS) --- */
 .card {
-    /* Fondo blanco semitransparente */
-    background-color: rgba(255, 255, 255, 0.7); 
-    /* Efecto cristal (Glassmorphism) desenfocando lo que hay detrás */
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px); /* Soporte para Safari */
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    /* Fondo blanco semitransparente para efecto moderno */
+    background-color: rgba(255, 255, 255, 0.65); 
+    
+    /* Efecto de cristal (Glassmorphism) desenfocando el fondo */
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px); /* Soporte para Safari y WebKit */
+    
+    /* Borde sutil transparente para reforzar el efecto de cristal cortado */
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    
+    /* Animación suave por si se le agregan interacciones a la tarjeta completa */
+    transition: background-color 0.3s ease;
+}
+
+/* Ligero oscurecimiento del fondo al hacer hover en la tarjeta */
+.card:hover {
+    background-color: rgba(255, 255, 255, 0.75);
 }
