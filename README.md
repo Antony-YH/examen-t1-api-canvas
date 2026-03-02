@@ -1,4 +1,4 @@
-# Examen de Graficación: Ajolote en Canvas 2D
+# Examen de Graficación: Axolote en Canvas 2D
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
@@ -11,7 +11,6 @@ Este repositorio contiene la solución a la actividad de renderizado por program
 * **Autor:** Antonio Yañez Hernandez
 * **Institución:** Tecnológico Nacional de México Campus Pachuca
 * **Carrera:** Ingeniería en Sistemas Computacionales
-* **Especialidad:** Redes y Tecnología de Software
 * **Materia:** Graficación
 * **Fecha:** 02 Marzo 2026
 
