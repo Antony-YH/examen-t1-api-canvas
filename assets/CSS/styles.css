@@ -1,13 +1,67 @@
+/* ==========================================================================
+   Estilos Personalizados - Axolote Canvas 2D
+   ========================================================================== */
+
+/* 1. Variables de color (Facilita cambiar la paleta en el futuro) */
+:root {
+    --water-light: #e6f4fb;
+    --water-deep: #a8d8f0;
+    --canvas-bg-top: #7ec0e6;
+    --canvas-bg-bottom: #ccefff;
+    --border-color: #2c3e50; /* Un azul marino oscuro, más elegante que negro puro */
+}
+
+/* 2. Fondo general de la página */
 body {
-    background: linear-gradient(to bottom, #a8d8f0, #e6f4fb);
+    /* Degradado en diagonal para un efecto más dinámico */
+    background: linear-gradient(135deg, var(--water-light) 0%, var(--water-deep) 100%);
+    /* Evita que el degradado se corte si la página es muy larga */
+    background-attachment: fixed; 
 }
 
+/* 3. Estilos específicos para el Canvas */
 canvas {
-    border: 3px solid #000;
-    border-radius: 15px;
-    background: linear-gradient(to bottom, #7ec0e6, #ccefff);
+    /* Borde grueso pero con un color más suave y armónico */
+    border: 4px solid var(--border-color);
+    border-radius: 16px;
+    
+    /* Degradado que simula la profundidad del agua (¡Excelente idea tuya!) */
+    background: linear-gradient(to bottom, var(--canvas-bg-top), var(--canvas-bg-bottom));
+    
+    /* Sombra base para despegarlo del fondo */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    
+    /* Transición suave para el efecto hover */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Efecto interactivo al pasar el mouse sobre el Canvas */
+canvas:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* 4. Estilos para la imagen original */
 img {
-    border-radius: 15px;
+    border-radius: 16px;
+    /* Borde blanco estilo fotografía / marco */
+    border: 4px solid #ffffff; 
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efecto interactivo al pasar el mouse sobre la imagen */
+img:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* 5. Ajuste moderno para las tarjetas (Cards) de Bootstrap */
+.card {
+    /* Fondo blanco semitransparente */
+    background-color: rgba(255, 255, 255, 0.7); 
+    /* Efecto cristal (Glassmorphism) desenfocando lo que hay detrás */
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); /* Soporte para Safari */
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
